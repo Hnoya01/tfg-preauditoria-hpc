@@ -1,4 +1,4 @@
-# Preauditoría administrativa de Imágenes HPC
+# Preauditoría administrativa de facturación - Imagenes
 
 Prototipo de Trabajo Final de Grado. El administrativo cruza la factura con las autorizaciones y revisa las prestaciones observadas. El auditor confirma el cierre y descarga el detalle de los débitos. La demo genera datos ficticios en el equipo.
 
