@@ -1,0 +1,28 @@
+{
+  "source": "authorization_30/source/Nomenclador.xlsx",
+  "sha256": "e50d52ee7d0329f8753e7c72d83e6554a11c410b979bb4947f1bad6819f410a2",
+  "purpose": "classification_only_no_economic_effect",
+  "rows": [
+    {
+      "code": "180109",
+      "invoice_rows": 1,
+      "sheet": "Hoja1",
+      "source_row": 834,
+      "canonical_description": "Ecografía oftalmológica uni o bilateral."
+    },
+    {
+      "code": "420101",
+      "invoice_rows": 4522,
+      "sheet": "Hoja1",
+      "source_row": 1462,
+      "canonical_description": "Consulta médica.� (X)"
+    },
+    {
+      "code": "420103",
+      "invoice_rows": 559,
+      "sheet": "Hoja1",
+      "source_row": 1463,
+      "canonical_description": "Consulta médica en horario nocturno y/o días feriados.� (X)"
+    }
+  ]
+}

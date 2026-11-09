@@ -1,0 +1,14 @@
+B18-R27 | Guía breve para la defensa
+
+La demostración sigue una factura ficticia de Imágenes del Hospital Privado de la Comunidad. En la pantalla Facturas, el administrativo carga el Excel y el CSV. Confirma el período del Excel, comprueba las filas, incorpora las autorizaciones y selecciona para esa factura la exportación recibida. El administrador confirma el alcance HPC y su fuente. En Procesamiento se analiza el lote. El operador recibe en la planilla las prestaciones que merecen revisión. El Excel conserva la fila original y el CSV aporta una orden con ítems, fechas y cantidades. El presupuesto se compara únicamente cuando se puede atribuir a esa práctica.
+
+1. ¿Por qué la TAC del 02/08 propone $250.000?
+En «Revisar», mostrar la orden ficticia DEMO-PRES-01. La prestación se facturó a $450.000 y el presupuesto de esa TAC es $200.000. La diferencia es $250.000. El sistema la muestra para decisión del administrativo. En el código, app/csv_budget.py, assess_budgets, comprueba el vínculo y calcula el excedente. app/row_decisions.py, candidates, arma la propuesta. El registro de la decisión ocurre después, en save, cuando el operador guarda.
+
+2. ¿Por qué la TAC del 04/08 no usa la misma autorización?
+Volver a las dos filas del mismo paciente ficticio. La orden cubría una realización, ya asignada al 02/08. En app/csv_rules.py, allocate, se recorren las fechas y se descuenta cada unidad usada de la capacidad del ítem. En esta demo el CSV cubre todo el período: el operador ve $450.000 a revisar para la segunda prestación. En otro caso, una exportación incompleta exige cotejo antes de concluir que falta un aval.
+
+3. ¿Quién confirma el total que sale en el Excel?
+El administrativo guarda ambas decisiones, por $700.000 en conjunto, y usa «Cerrar y pasar al auditor». El auditor ajusta la primera a $200.000, registra su motivo y confirma el cierre. app/invoice_handoff.py, send, registra el pase. app/invoice_audit.py, adjust, confirm y workbook, gestionan el ajuste, el cierre y el archivo. En «Descargar Excel de débitos» se ven las dos filas finales: $200.000 y $450.000. Sobre $900.000 facturados en Imágenes quedan $650.000 de débito final y $250.000 de neto.
+
+Si preguntan por una cantidad parcial, SIM-01 es una simulación aparte: con dos unidades iguales facturadas por $200.000 y una autorizada, se prorratea el total y aparecen $100.000 pendientes de decisión. Si preguntan por validación real, las 472 filas trazables corresponden a una evaluación automática. La sensibilidad y la precisión requieren pares verificables entre revisión humana y resultado del prototipo.

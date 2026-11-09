@@ -1,0 +1,12 @@
+B18-R25 · Prueba ficticia de la planilla de Imágenes
+
+Abrí ABRIR-DEMO.cmd. Usá la dirección local que imprime y la cuenta demo-administrativo de esta demo. El archivo local de credenciales está dentro de .tmp/presentacion-R25. La base de validación real está separada.
+
+Elegí «DEMO FICTICIO · Autorizaciones y adicionales R25» y abrí FICTICIO_autorizaciones_R25.xlsx. La fila 6 es la TAC del 2/8. Debe decir «Posible débito · verificar orden» con $100.000 a revisar. En Revisar figuran la orden FICTICIO-TAC-03, la fecha de autorización 3/8 y la fecha de la prestación 2/8. La fila 7 del 4/8 utiliza inicialmente esa orden.
+
+Para probar la corrección, en la fila 6 elegí «Vincular orden FICTICIO-TAC-03 verificada» y registrá el respaldo ficticio. Revisá ambas filas. La del 2/8 usa la orden y la del 4/8 vuelve a revisión. La propuesta por falta de aval se recalcula para las dos. El historial de la verificación se conserva.
+
+En «Fuentes y alcance» se puede registrar la incorporación al consolidado. Usá las filas 6 y 7 únicamente si el comprobante de prueba las identifica. Ingresá una fecha y un localizador del comprobante. El plazo se comprueba por prestación.
+
+Cerrar la ventana del servidor al finalizar. Para comenzar de nuevo sin tocar la demo preparada, generar otra con nombre distinto usando python -B -m scripts.create_r25_demo --name presentacion-R25-otra y arrancarla con ABRIR-DEMO.cmd --name presentacion-R25-otra.
+

@@ -1,0 +1,35 @@
+B18-R27 | Preauditoría administrativa de Imágenes HPC
+
+Primera ejecución en otra PC: prepará el entorno según la sección final de esta guía antes de abrir ABRIR-DEMO.cmd.
+
+Para presentar en este equipo
+
+1. Hacé doble clic en ABRIR-DEMO.cmd. Se abre el navegador en un puerto libre de 127.0.0.1. Dejá la ventana del iniciador abierta hasta terminar. Si el navegador no se abre, copiá la dirección que muestra la ventana.
+2. Entrá como demo-administrativo. Las claves generadas en este equipo están en .tmp\presentacion-R27\credenciales-demo.txt.
+3. En Facturas elegí el conjunto «DEMO FICTICIO · recorrido administrativo y auditor». Abrí FICTICIO_presupuesto_TAC.xlsx. En Pendientes hay dos TAC del mismo paciente ficticio. Tocá Revisar en la del 02/08. Leé el párrafo que identifica la orden DEMO-PRES-01. Verás $450.000 facturados, $200.000 autorizados y $250.000 a revisar.
+4. Elegí «Aceptar débito propuesto» y «Guardar y seguir». Revisadas pasa a 1. En la TAC del 04/08, el único aval ya cubrió la del 02/08. La fuente ficticia completa permite proponer $450.000 por la segunda. Para repetir el ensayo, aceptá esa propuesta también. En una revisión propia podés indicar parcial, total o sin débito con motivo. Dejar pendiente conserva el caso en Pendientes.
+5. Con cero pendientes, pulsá «Cerrar y pasar al auditor». Salí. Entrá como demo-auditor en el mismo conjunto y elegí «Revisar decisiones». Las dos decisiones suman $700.000 sobre $900.000 de Imágenes.
+6. Para mostrar un ajuste humano, cambiá el débito de la primera TAC a $200.000 y escribí «Ajuste final de prueba sobre el presupuesto de la primera TAC». El total de débito pasa a $650.000 y el neto de Imágenes a $250.000. Confirmá el cierre una vez y descargá el Excel. Tendrá dos prestaciones debitadas, con orden, importe final y motivo. Si elegís otros importes, el Excel reflejará tus decisiones.
+7. Salí de la sesión y presioná Ctrl+C en la ventana del iniciador. El avance queda guardado en esa demo.
+
+Para demostrar la carga de los archivos originales ficticios
+
+Elegí el conjunto «DEMO FICTICIO · Carga nueva R27» y «Cargar factura y autorizaciones». En .tmp\presentacion-R27\entrada-ficticia están TAC-ficticia.xlsx y Avales-ficticios.csv. Guardá el Excel, seleccioná agosto de 2026, conciliá e incorporá las filas. Incorporá el CSV, indicá la procedencia y seleccionalo para la factura. Para este ejemplo ficticio su cobertura completa es del 01/06/2026 al 31/08/2026. Guardá la selección y abrí la planilla. En datos de trabajo esa declaración requiere evidencia del período exportado.
+
+Para una factura nueva, demo-admin confirma el alcance HPC y su fuente en «Convenio HPC» > «Ver o confirmar alcance HPC». Es una confirmación por factura. Luego, como demo-administrativo, abrí la factura, usá el acceso a Procesamiento y pulsá «Analizar lote». Cuando termine, volvé a Planilla y seguí desde el paso 3. La factura preparada para la presentación ya tiene estos pasos completos.
+
+Repetir desde cero sin alterar una demo trabajada
+
+Desde fuentes, con el Python 3.12 del proyecto, usá un nombre de demo que aún no exista, por ejemplo:
+  python -B -m scripts.create_r27_demo --name ensayo-nuevo
+  python -B -m scripts.start_r22_demo --name ensayo-nuevo --abrir
+Las claves de esa copia estarán en .tmp\ensayo-nuevo\credenciales-demo.txt.
+
+Si el ZIP se lleva a otra PC con Windows
+
+Extraé la carpeta fuentes completa. Con un Python 3.12 y una .venv que tenga instaladas las dependencias de requirements-lock.txt, ABRIR-DEMO.cmd prepara la demo ficticia en el primer inicio. En una máquina sin entorno:
+  py -3.12 -m venv .venv
+  .\.venv\Scripts\python.exe -m pip install -r requirements-lock.txt
+  .\.venv\Scripts\python.exe -m pip check
+Una vez verificadas las dependencias, hacé doble clic en ABRIR-DEMO.cmd dentro de fuentes.
+El ZIP excluye bases, insumos de pacientes y claves de sesión. La primera generación crea claves ficticias nuevas en el equipo de destino.

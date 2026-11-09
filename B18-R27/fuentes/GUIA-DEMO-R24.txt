@@ -1,0 +1,19 @@
+B18-R24 · Equivalencias, adicionales y unidades
+
+Ingresá como demo-administrativo y elegí «DEMO FICTICIO · Unidades y adicionales R24».
+Abrí FICTICIO_unidades_y_adicionales_R24.xlsx. «Ver factura completa» permite consultar las cuatro filas juntas.
+
+1. Mamografía del 02/08. Cantidad facturada 2 lados. El CSV contiene un estudio bilateral. La columna de aval muestra «2 de 2 lados cubiertos».
+2. Mamografía del 04/08. La primera ya usó ese aval. Esta segunda requiere otro. El CSV ficticio completo permite proponer revisar el total de $100.000.
+3. RX de tórax del 02/08. Tiene un aval para el estudio principal.
+4. Exposición subsiguiente de la misma orden. La fuente dice «FRENTE Y PERFIL». El adicional muestra «Aval principal» y el detalle identifica el principal y las dos exposiciones documentadas.
+5. El precio aplicable se revisa por separado. En este conjunto se preparó la autorización y sus unidades, sin acreditar una referencia económica para cada prestación.
+
+Gestión de reglas
+Con demo-admin, abrí Convenios y valores > Revisar correspondencias y unidades.
+Se muestran el tipo de relación, los códigos completos, la unidad y el estado. Podés filtrar por tipo o buscar por código. Marcá las reglas verificadas, explicá el respaldo y guardá. Para retirar una regla, desmarcala y explicá el motivo. «Ver historial» conserva las versiones y la cuenta.
+demo-administrativo y demo-auditor consultan este apartado con los controles de escritura deshabilitados. El servidor también comprueba el permiso.
+
+Los otros conjuntos conservan los ejemplos de las TAC, el presupuesto de la eco y el cierre administrativo/auditor.
+Las cuentas ficticias están en .tmp/presentacion-R24/credenciales-demo.txt. Para iniciar de nuevo la demo, abrí ABRIR-DEMO.cmd. La consola muestra el puerto libre de 127.0.0.1.
+Para otra presentación limpia, generá un nombre nuevo mediante python -B -m scripts.create_r24_demo --name NOMBRE-NUEVO. Conservá las demostraciones ya utilizadas.

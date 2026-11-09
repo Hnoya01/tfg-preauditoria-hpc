@@ -1,0 +1,35 @@
+{
+  "kind": "P00_SYNTHETIC_PROPOSAL_NOT_VALIDATED_AGAINST_SYNC",
+  "currency": "ARS",
+  "cases": [
+    {
+      "id": "C01_item_distinto",
+      "invoice": {"row": 2, "affiliate_id": "00000000", "full_code": "1234567801", "performed_on": "2026-08-10", "quantity": 1, "hono": "60.00", "dere": "40.00", "total": "100.00"},
+      "authorization": {"order_id": "ORDEN-FICTICIA-1", "global_status": "AUTORIZADO", "items": [{"item_id": "A", "full_code": "1234567800", "status": "AUTORIZADO"}, {"item_id": "B", "full_code": "1234567801", "status": "RECHAZADO"}]},
+      "expected": {"authorization_control": "indicio_de_inconsistencia", "reason": "La decisión por ítem B prevalece sobre el estado global; compartir prefijo no traslada aprobación", "rules": ["RN06", "RN09"]}
+    },
+    {
+      "id": "C02_fecha_posterior_a_prestacion",
+      "invoice": {"row": 3, "affiliate_id": "00000000", "full_code": "1234567800", "performed_on": "2026-08-10", "quantity": 1, "hono": "60.00", "dere": "40.00", "total": "100.00", "consolidated_at": "2026-08-12T15:00:00-03:00"},
+      "authorization": {"item_id": "A", "status": "AUTORIZADO", "decided_at": "2026-08-11T10:00:00-03:00", "quantity": 1},
+      "expected": {"rn10": "sin_observaciones", "reason": "Autorización posterior a la prestación pero anterior a la incorporación acreditada", "rules": ["RN10", "CA10"]}
+    },
+    {
+      "id": "C03_incorporacion_desconocida",
+      "invoice": {"row": 4, "affiliate_id": "00000000", "full_code": "1234567800", "performed_on": "2026-08-10", "quantity": 1, "hono": "60.00", "dere": "40.00", "total": "100.00"},
+      "authorization": {"item_id": "A", "status": "AUTORIZADO", "decided_at": "2026-08-11"},
+      "expected": {"rn10": "no_concluyente", "reason": "Falta evidencia de incorporación; no usar fecha de factura ni convertir fecha sin hora a medianoche", "rules": ["RN10", "CP02"]}
+    },
+    {
+      "id": "C04_cantidad_ambigua",
+      "invoice": {"row": 5, "affiliate_id": "00000000", "full_code": "1234567800", "performed_on": "2026-08-10", "quantity": 2, "hono": "60.00", "dere": "40.00", "total": "100.00"},
+      "authorization": {"order_id": "ORDEN-FICTICIA-2", "items": [{"full_code": "1234567800", "quantity": null}, {"full_code": "1234567800", "quantity": null}]},
+      "expected": {"quantity_control": "no_concluyente", "reason": "No asignar unidades por orden de aparición ni multiplicar los importes de fila por cantidad", "rules": ["RN11", "RN12", "MD04", "MD05"]}
+    },
+    {
+      "id": "C05_diferencia_interna",
+      "invoice": {"row": 6, "affiliate_id": "00000000", "full_code": "1234567800", "performed_on": "2026-08-10", "quantity": 1, "hono": "60.00", "dere": "40.00", "total": "100.02"},
+      "expected": {"rn13": "indicio_de_inconsistencia", "difference_ars": "0.02", "reason": "La diferencia supera la tolerancia de ARS 0,01", "rules": ["RN12", "RN13"]}
+    }
+  ]
+}

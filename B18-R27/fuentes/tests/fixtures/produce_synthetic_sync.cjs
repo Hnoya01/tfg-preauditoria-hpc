@@ -1,0 +1,5 @@
+const {prepareImageDay} = require('./sync_producer_excerpt.cjs');
+const source = {id:'SYNTH-1',affiliate:'SYNTH-A',name:'PERSONA FICTICIA',doctor:'MEDICO FICTICIO',orderDate:'01/08/2026',orderType:'orden.imagen',practices:'010101 -- IMAGEN FICTICIA',log:''};
+const displayed = {id:' SYNTH-1 ',affiliate:' SYNTH-A ',name:source.name,doctor:source.doctor,orderDate:source.orderDate};
+const order = {position:0,id:source.id,type:source.orderType,source,displayed,displayedRaw:displayed,practices:{sourceText:source.practices,status:'pattern_parsed',unparsedPrefix:'',items:[{position:0,codeText:'010101',sourceText:source.practices,descriptionAndAmountText:'IMAGEN FICTICIA'}]},movements:[],derivations:{markerPresent:false,items:[]},attachmentReferences:[],externalContent:'not_applicable',problems:[],readyForIngest:true};
+prepareImageDay({outcome:'recognized',request:{requestedType:'orden.imagen',requestedDate:'2026-08-01'},structure:{markers:1},orders:[order],problems:[]},{attemptId:'synthetic-producer',capturedAt:1794052800}).then(result=>process.stdout.write(JSON.stringify(result))).catch(e=>{process.stderr.write(e.message);process.exitCode=1});

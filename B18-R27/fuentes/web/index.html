@@ -1,0 +1,416 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Preauditoría · Bandeja de revisión</title>
+  <link rel="stylesheet" href="/assets/style.css">
+</head>
+<body>
+  <main>
+    <header>
+      <p class="eyebrow">PREAUDITORÍA ADMINISTRATIVA · PROTOTIPO</p>
+      <h1>Revisión de facturación</h1>
+      <p>Fuentes, controles y decisiones compartidas con evidencia.</p>
+    </header>
+    <section id="login-panel" class="card">
+      <h2>Ingresar</h2>
+      <form id="login-form">
+        <label>Usuario <input name="username" autocomplete="username" required></label>
+        <label>Contraseña <input name="password" type="password" autocomplete="current-password" required></label>
+        <button type="submit">Entrar</button>
+      </form>
+    </section>
+    <section id="workspace-panel" class="card" hidden>
+      <div class="row"><p id="identity"></p><button id="logout" type="button">Salir</button></div>
+      <details id="dataset-management"><summary>Administrar conjuntos</summary>
+      <form id="dataset-form" hidden>
+        <label>Nombre del conjunto <input name="label" maxlength="120" required></label>
+        <button type="submit">Crear conjunto</button>
+      </form>
+      <ul id="datasets"></ul>
+      </details>
+      <section id="workspace-context" aria-label="Contexto de trabajo" hidden>
+        <label>Conjunto <select id="invoice-dataset"></select></label>
+        <label>Lote <select id="invoice-batch"></select></label>
+
+      </section>
+      <nav id="workspace-nav" aria-label="Secciones de trabajo" hidden>
+        <button type="button" data-workspace-view="inicio">Facturas</button>
+        <button type="button" data-workspace-view="facturacion">Cargar archivos</button>
+        <button type="button" data-workspace-view="autorizaciones">Autorizaciones</button>
+        <button type="button" data-workspace-view="valores">Convenios y valores</button>
+        <button type="button" data-workspace-view="procesamiento">Procesamiento</button>
+        <button type="button" data-workspace-view="revision">Planilla</button>
+        <button type="button" data-workspace-view="salida">Salida</button>
+      </nav>
+      <section id="invoice-home" hidden>
+        <h2>Facturas HPC</h2>
+        <div class="row"><button id="home-add">Cargar factura y autorizaciones</button><button id="home-agreement">Convenio HPC</button><button id="home-requests" hidden>Solicitudes de alta</button></div>
+        <table><thead><tr><th>Factura</th><th>Período</th><th>Estado</th><th>Acción</th></tr></thead><tbody id="home-rows"></tbody></table>
+      </section>
+      <section id="requests-home" hidden><h2>Solicitudes de alta</h2><div id="requests-home-content" aria-live="polite"></div></section>
+      <section id="invoice-panel" hidden>
+        <h3>Excel de facturación</h3>
+        <p>Elegí el Excel, revisá las filas y confirmá el mes de facturación.</p>
+        <form id="upload-form">
+          <label>Excel X1 <input id="invoice-file" type="file" accept=".xlsx" required></label>
+          <button type="submit">Guardar original</button>
+        </form>
+        <label>Período a revisar <input id="invoice-period" type="month" required></label>
+        <button id="preview-button" type="button">Ver conciliación</button>
+        <pre id="invoice-preview" aria-live="polite"></pre>
+        <label><input id="period-confirmed" type="checkbox"> Confirmo que este es el período del lote</label>
+        <button id="confirm-button" type="button" disabled>Incorporar filas</button>
+      </section>
+      <section id="intake-ready" hidden><p id="intake-status" role="status"></p><button id="intake-open" disabled>Abrir planilla</button></section>
+      <section id="source-panel" hidden>
+        <h3>Convenios y valores HPC</h3>
+        <section id="authorization-panel">
+          <h4>Autorizaciones de HPC</h4>
+          <p>Cargá el CSV y seleccionalo para esta factura.</p>
+          <p class="advanced-intake">Sync: paquete local prepareImageDay de histórico 0.4 (productor 0.5.1), sin conexión con HPC. Se conserva el original y se convierte a A1 parcial, sin validar el intercambio actual ni inferir autorizaciones por práctica. No admite resúmenes de consultas ni respuestas arbitrarias del Worker.</p>
+          <form id="authorization-upload-form">
+            <label>CSV HPC, JSON A1 o prepareImageDay <input id="authorization-file" type="file" accept=".csv,text/csv,.json,application/json" required></label>
+            <button type="submit">Guardar original y ver vista previa</button>
+          </form>
+          <label>Original recibido <select id="authorization-upload"></select></label>
+          <button id="authorization-preview-button" type="button" disabled>Consultar vista previa</button>
+          <a id="authorization-original" hidden>Descargar original conservado</a>
+          <pre id="authorization-summary" aria-live="polite"></pre>
+          <ul id="authorization-observations"></ul>
+          <div id="authorization-details"></div>
+          <form id="authorization-import-form">
+            <label>Procedencia o contexto de recepción <textarea id="authorization-provenance" minlength="10" maxlength="2000" required></textarea></label>
+            <button id="authorization-import-button" type="submit" disabled>Incorporar autorizaciones</button>
+          </form>
+          <h4 class="advanced-intake">Historia de capturas recibidas</h4>
+          <p class="advanced-intake">Las versiones anteriores se conservan.</p>
+          <ul id="authorization-history"></ul>
+          <ul id="authorization-source-status"></ul>
+          <section id="authorization-matching-panel">
+            <h4>Autorizaciones de esta factura</h4>
+            <p>Elegí el CSV que corresponde a esta factura. Indicá su período completo solo si verificaste la cobertura.</p>
+            <form id="authorization-scope-form">
+              <label>Capturas para este lote <select id="authorization-scope-captures" multiple size="4" required></select></label>
+              <label>Origen del recorrido <select id="authorization-scope-mode"><option value="real_unvalidated">Fuente real sin validar</option><option value="synthetic_demo">Demostración ficticia</option></select></label>
+              <label><input id="authorization-demo-invoice" type="checkbox"> Confirmo que el Excel del lote también es ficticio</label>
+              <label><input id="csv-complete" type="checkbox"> Confirmo que el CSV incluye todas las resoluciones de Imágenes HPC del período, incluso las de órdenes anteriores</label>
+              <div id="csv-export-period" hidden><label>Desde <input type="date" id="csv-complete-from"></label>
+                <label>Hasta <input type="date" id="csv-complete-until"></label></div>
+              <label>Fundamento del alcance <textarea id="authorization-scope-note" minlength="10" maxlength="2000" required></textarea></label>
+              <button>Usar este CSV en la factura</button>
+            </form>
+            <pre id="authorization-scope-summary"></pre>
+            <form id="authorization-match-form">
+              <label>Fila física de Excel para correspondencia <input id="authorization-match-row" type="number" min="2" required></label>
+              <button>Consultar correspondencia de la fila</button>
+            </form>
+            <pre id="authorization-match-summary" aria-live="polite"></pre>
+            <div id="authorization-match-candidates"></div>
+            <form id="authorization-link-form">
+              <label>Estado del vínculo humano <select id="authorization-link-state"><option value="unresolved">No resuelto / retirar selección anterior</option><option value="selected">Seleccionar candidato compatible con evidencia</option></select></label>
+              <label>Candidato <select id="authorization-link-candidate"></select></label>
+              <label>Evidencia para la correspondencia <textarea id="authorization-link-note" minlength="10" maxlength="2000" required></textarea></label>
+              <button id="authorization-link-save" disabled>Guardar versión del vínculo</button>
+            </form>
+            <pre id="authorization-link-history"></pre>
+            <p>Seleccionar un ítem no aprueba su autorización, no resuelve conflictos, no asigna unidades y no habilita importes.</p>
+          </section>
+        </section>
+        <ul id="sources"></ul>
+        <p>Para esta factura se consultan únicamente valores de HPC, según la aclaración de Hernán. Son candidatos del corte indicado; moneda, unidad económica, condiciones y aplicación a una fila todavía requieren verificación.</p>
+        <form id="value-search-form">
+          <label>Fuente de valores <select id="value-source"></select></label>
+          <label>Código completo <input id="value-code" type="text" maxlength="64" required></label>
+          <label>Fecha de práctica <input id="value-date" type="date"></label>
+          <label>Prestador de esta factura <input id="value-provider" type="text" value="HPC" readonly></label>
+          <button type="submit">Ver candidatos</button>
+        </form>
+        <pre id="value-results" aria-live="polite"></pre>
+        <section id="hpc-scope-panel">
+          <h4>Alcance HPC de la factura</h4>
+          <p>Confirmá una vez el lote y la fuente de convenio HPC. No confirma importes, unidades ni débitos.</p>
+          <button id="hpc-scope-open" type="button">Ver o confirmar alcance HPC</button>
+          <div id="hpc-scope-content" aria-live="polite"></div>
+        </section>
+        <section id="code-map-panel" hidden>
+          <h4>Equivalencias, adicionales y unidades</h4>
+          <button id="code-map-open" type="button" disabled>Revisar correspondencias y unidades</button>
+          <div id="code-map-content" aria-live="polite"></div>
+        </section>
+        <section id="hpc-values-panel">
+          <h4>Gestión de valores HPC</h4>
+          <p>V1 permanece intacto con el corte BASE_2026-10-09. Cada cambio se registra como una nueva versión de un arancel HPC exacto, con PDF de convenio, página, importe y fecha de inicio. Este registro no modifica automáticamente los controles ni acredita la aplicación del valor a una factura.</p>
+          <form id="hpc-document-form" hidden>
+            <label>Nuevo PDF de convenio <input id="hpc-document-file" type="file" accept=".pdf,application/pdf" required></label>
+            <label>Procedencia del PDF <textarea id="hpc-document-provenance" minlength="10" maxlength="2000" required></textarea></label>
+            <button type="submit">Registrar PDF original</button>
+          </form>
+          <form id="hpc-value-form" hidden>
+            <label>Secuencia exacta del arancel V1 <input id="hpc-tariff-seq" type="number" min="1" step="1" required></label>
+            <label>Código completo HPC <input id="hpc-value-code" maxlength="64" required></label>
+            <label>Nuevo importe exacto ARS (dos decimales) <input id="hpc-value-amount" inputmode="decimal" placeholder="0.00" pattern="[0-9]+\.[0-9]{2}" required></label>
+            <label>Unidad indicada en el convenio <input id="hpc-value-unit" maxlength="100" placeholder="por práctica, por U.B., etc." required></label>
+            <label>Inicio declarado por el convenio <input id="hpc-value-from" type="date" required></label>
+            <label>PDF de convenio registrado <select id="hpc-value-document" required></select></label>
+            <label>Página física del PDF <input id="hpc-value-page" type="number" min="1" step="1" required></label>
+            <label>Cláusula o fragmento que respalda el importe <textarea id="hpc-value-excerpt" minlength="10" maxlength="2000" required></textarea></label>
+            <label>Motivo del cambio <textarea id="hpc-value-reason" minlength="10" maxlength="2000" required></textarea></label>
+            <button type="submit">Guardar nueva versión HPC</button>
+            <p>Estado del arancel: la baja conserva su historia y rige desde la fecha indicada. Usá los mismos campos de PDF, página, extracto y motivo.</p>
+            <button id="hpc-withdraw-button" type="button">Dar de baja desde esa fecha</button>
+            <button id="hpc-reinstate-button" type="button">Reactivar desde esa fecha</button>
+          </form>
+          <section id="agreement-panel" hidden>
+            <h5>Respaldo documental del convenio HPC</h5>
+            <p>Declaración única para las tarifas seleccionadas de esta fuente, no para cada fila. Conserva los importes originales. Sólo habilita comparación exploratoria cuando se cumplen las demás condiciones; no confirma equivalencia clínica, autorización ni débito.</p>
+            <p>Usa el PDF registrado, página y extracto del formulario de valores anterior. El extracto debe respaldar los importes finales y sus dimensiones, no sólo una unidad de cálculo.</p>
+            <label>Secuencias exactas de las tarifas respaldadas (separadas por coma) <input id="agreement-seqs" placeholder="40, 41"></label>
+            <label>Moneda explícita según documento <select id="agreement-currency"><option value="">Sin declarar</option><option value="ARS">ARS</option></select></label>
+            <label>Unidad explícita según documento <select id="agreement-unit"><option value="">Sin declarar</option><option value="por práctica">por práctica</option></select></label>
+            <label>Vigencia desde <input id="agreement-from" type="date"></label>
+            <label>Vigencia hasta, si corresponde <input id="agreement-until" type="date"></label>
+            <label>Condiciones y alcance respaldados <textarea id="agreement-conditions" maxlength="2000"></textarea></label>
+            <label>Fundamento de la declaración <textarea id="agreement-reason" maxlength="2000"></textarea></label>
+            <label>ID de declaración que reemplaza, sólo si corresponde (activa: mismo conjunto; retirada: puede seleccionar subconjunto) <input id="agreement-replaces"></label>
+            <button id="agreement-preview" type="button">Previsualizar respaldo</button>
+            <button id="agreement-save" type="button" disabled>Confirmar respaldo previsualizado</button>
+            <button id="agreement-cancel" type="button">Cancelar previsualización</button>
+            <pre id="agreement-result" aria-live="polite"></pre>
+            <button id="agreement-history" type="button">Consultar historia del convenio</button>
+            <pre id="agreement-history-result" aria-live="polite"></pre>
+            <label>ID exacto de declaración a retirar <input id="agreement-withdraw-id"></label>
+            <label>Motivo del retiro <textarea id="agreement-withdraw-reason" maxlength="2000"></textarea></label>
+            <button id="agreement-withdraw" type="button">Retirar respaldo, conservar historia</button>
+          </section>
+          <section id="hpc-percentage-panel" hidden>
+            <h5>Actualizar una selección por porcentaje</h5>
+            <p>Usa la fecha, PDF, página, cláusula y motivo del formulario anterior. Las bases originales requieren una declaración explícita respaldada por ese PDF; las versiones documentadas conservan su unidad. Redondeo operativo: al centavo más cercano, mitad hacia arriba (ROUND_HALF_UP); no se presume una regla del convenio.</p>
+            <label>Secuencias del catálogo original separadas por coma <input id="hpc-percentage-seqs" placeholder="1, 2, 5"></label>
+            <label>UUID de altas HPC propias, separados por coma <input id="hpc-percentage-local-ids" placeholder="Copiar los UUID completos desde la historia de altas"></label>
+            <p>Elegí secuencias originales, UUID propios o ambos. Máximo 1000 referencias en total; no se convierten UUID en secuencias.</p>
+            <label>Porcentaje, negativo para reducción <input id="hpc-percentage-rate" inputmode="decimal" placeholder="10.5"></label>
+            <fieldset>
+              <legend>Solo para usar importes del catálogo original como base</legend>
+              <label>Moneda base declarada <select id="hpc-percentage-base-currency"><option value="">Sin declarar</option><option value="ARS">ARS</option></select></label>
+              <label>Unidad base según PDF <input id="hpc-percentage-base-unit" maxlength="100" placeholder="Escribir la unidad documentada"></label>
+              <label><input id="hpc-percentage-base-declaration" type="checkbox"> Declaro que el importe base del catálogo está expresado en ARS y en esta unidad según el PDF indicado, que respalda la base y el cambio.</label>
+              <p>Declaración del operador, no comprobación automática ni confirmación de aplicabilidad a la factura.</p>
+            </fieldset>
+            <button id="hpc-percentage-preview" type="button">Previsualizar porcentaje</button>
+            <button id="hpc-percentage-apply" type="button" disabled>Aplicar selección previsualizada</button>
+            <button id="hpc-percentage-cancel" type="button">Cancelar previsualización</button>
+            <pre id="hpc-percentage-result" aria-live="polite"></pre>
+          </section>
+          <section id="local-hpc-panel" hidden>
+            <h4>Prácticas propias HPC</h4>
+            <p>Alta con identidad UUID propia. Conserva el catálogo original. Código completo y familia declarada no establecen equivalencias con otros códigos.</p>
+            <button id="local-hpc-load" type="button">Ver prácticas e historia</button>
+            <label>Código o nombre exacto para buscar <input id="local-hpc-query" maxlength="300"></label>
+            <div id="local-hpc-list"></div>
+            <form id="local-hpc-form">
+              <input id="local-hpc-id" type="hidden">
+              <label>Código completo <input id="local-hpc-code" maxlength="64" required></label>
+              <label>Descripción exacta <input id="local-hpc-description" maxlength="300" required></label>
+              <label>Familia declarada <select id="local-hpc-family"><option value="unclassified">Sin clasificar</option><option value="images">Imágenes</option><option value="other">Otras prácticas</option></select></label>
+              <label>Importe ARS <input id="local-hpc-amount" placeholder="0.00" pattern="[0-9]+\.[0-9]{2}" required></label>
+              <label>Moneda explícita <select id="local-hpc-currency" required><option value="">Elegir</option><option value="ARS">ARS</option></select></label>
+              <label>Unidad documentada <input id="local-hpc-unit" maxlength="100" placeholder="por práctica" required></label>
+              <label>Estado desde la fecha <select id="local-hpc-active"><option value="true">Activa</option><option value="false">Baja lógica</option></select></label>
+              <p>Usa fecha, PDF, página, extracto y motivo del formulario de convenio anterior. La identidad no se modifica después del alta. Para actualizar importe o dar de baja, abrir una práctica de la lista.</p>
+              <button id="local-hpc-save" type="submit">Guardar alta o versión documentada</button>
+              <button id="local-hpc-new" type="button">Nueva práctica / cancelar edición</button>
+            </form>
+            <pre id="local-hpc-result" aria-live="polite"></pre>
+          </section>
+          <button id="hpc-value-history-button" type="button">Ver historia del arancel indicado</button>
+          <pre id="hpc-value-history" aria-live="polite"></pre>
+        </section>
+        <h4>Comparación numérica HPC del lote</h4>
+        <p>Explora la tarifa HPC del código completo frente al total Q de la fila, suponiendo igual unidad y moneda ARS. Una diferencia es candidata para revisar: no modifica RN14 ni propone un débito.</p>
+        <label>Ver <select id="hpc-comparison-filter"><option value="differences">Diferencias</option><option value="all">Todas las filas</option><option value="numeric_equal">Coincidencias numéricas</option><option value="needs_interpretation">Requieren interpretación</option><option value="no_exact_hpc_tariff">Sin código HPC exacto</option></select></label>
+        <button id="hpc-comparison-button" type="button">Comparar lote con HPC</button>
+        <pre id="hpc-comparison-summary" aria-live="polite"></pre>
+        <button id="hpc-readiness-button" type="button">Revisar respaldo de los valores por encima</button>
+        <pre id="hpc-readiness-summary" aria-live="polite"></pre>
+        <div class="row"><button id="hpc-previous" type="button" disabled>Anterior</button><button id="hpc-next" type="button" disabled>Siguiente</button></div>
+        <label>Fila física de Hoja1 <input id="hpc-row" type="number" min="2" step="1"></label>
+        <button id="hpc-row-button" type="button">Ver cálculo de la fila</button>
+        <pre id="hpc-row-detail" aria-live="polite"></pre>
+        <pre id="hpc-row-readiness" aria-live="polite"></pre>
+        <section id="documentary-panel" hidden>
+          <h4>Cotejo del factor en el anexo NBU</h4>
+          <p>Registrá lo que observaste en el código y la página del PDF. Este cotejo no aprueba el precio ni las condiciones de la prestación.</p>
+          <a id="documentary-pdf" target="_blank" rel="noopener">Consultar PDF registrado</a>
+          <pre id="documentary-context"></pre>
+          <pre id="documentary-history" aria-live="polite"></pre>
+          <form id="documentary-form">
+            <label>Edición del documento <input id="documentary-edition" maxlength="200" required></label>
+            <label>Página del PDF, contando desde 1 <input id="documentary-page" type="number" min="1" max="10000" step="1" required></label>
+            <label>Fragmento o ubicación del código y factor <textarea id="documentary-fragment" minlength="10" maxlength="2000" required></textarea></label>
+            <label>Factor observado en U.B. <input id="documentary-factor" type="text" inputmode="decimal" maxlength="32"></label>
+            <label>Conclusión <select id="documentary-conclusion"><option value="inconclusive">No concluyente</option><option value="matches">Coincide con el catálogo</option><option value="differs">Difiere del catálogo</option></select></label>
+            <label>Fundamento o motivo de la nueva versión <textarea id="documentary-note" minlength="10" maxlength="2000" required></textarea></label>
+            <button type="submit">Guardar constancia documental</button>
+          </form>
+        </section>
+      </section>
+      <section id="controls-panel" hidden>
+        <h3>Controles administrativos</h3>
+        <p>El análisis se ejecuta explícitamente sobre el lote importado. Las autorizaciones pendientes y los valores sin aplicabilidad verificada quedan inconclusos. Los indicios requieren revisión humana.</p>
+        <button id="analyze-button" type="button">Analizar lote</button>
+        <section id="processing-monitor" aria-label="Estado del procesamiento">
+          <div class="row"><h4>Estado del procesamiento</h4><button id="processing-refresh" type="button" class="secondary">Actualizar estado</button></div>
+          <p id="processing-status" role="status" aria-live="polite">Elegí un lote importado.</p>
+          <progress id="processing-progress" hidden aria-label="Filas preparadas"></progress>
+          <p id="processing-count"></p><p id="processing-message" role="status"></p>
+          <details><summary id="processing-history-label">Historial de intentos</summary><div class="processing-history-wrapper"><table><thead><tr><th>Inicio / usuario</th><th>Estado</th><th>Etapa</th><th>Filas preparadas</th><th>Intento / anterior</th><th>Acción</th></tr></thead><tbody id="processing-history"></tbody></table></div></details>
+          <p class="note">El avance cuenta filas preparadas, incluidas las excluidas que se conservan como historia. Terminar la preparación no significa que la captura ya esté publicada. La vigencia y las limitaciones se consultan en los resultados.</p>
+        </section>
+        <label>Análisis <select id="control-run"></select></label>
+        <pre id="control-summary" aria-live="polite"></pre>
+        <label>Fila física de Hoja1 <input id="control-row" type="number" min="2" step="1"></label>
+        <button id="control-row-button" type="button">Ver controles de la fila</button>
+        <pre id="control-row-results" aria-live="polite"></pre>
+      </section>
+      <section id="review-workbench" hidden>
+        <p id="sheet-focus-context" hidden></p>
+        <section id="handoff-panel" aria-label="Pase de la factura al auditor" hidden>
+          <div class="handoff-bar"><strong id="handoff-title"></strong><span id="handoff-status" role="status"></span>
+            <button id="handoff-send" type="button" hidden disabled>Cerrar y pasar al auditor</button>
+            <button id="handoff-full" type="button" class="secondary" hidden>Ver factura completa</button>
+          </div>
+          <div id="handoff-inbox"></div><div id="handoff-decisions"></div>
+        </section>
+        <div class="row review-tools"><label>Función <select id="observation-duty"><option value="administrative">Administrativo</option><option value="auditor">Auditor</option></select></label><button id="observation-inbox" type="button">Derivaciones al auditor</button><button type="button" id="practice-requests">Solicitudes de alta</button><button id="observation-all" type="button">Consultar todos los casos</button><details id="board-source-info"><summary>Fuentes y alcance</summary><span id="board-classification"></span></details><button id="board-refresh" type="button" class="secondary">Actualizar</button></div>
+
+        <p id="category-feedback" class="saved-receipt" role="status" hidden></p>
+        <p id="invoice-source-notices" hidden></p>
+        <form id="board-filters">
+          <div class="queue-views" role="group" aria-label="Vistas rápidas">
+            
+            <button type="button" data-queue="images">Pendientes · Imágenes</button>
+            <button type="button" data-queue="row_reviewed">Revisadas · Imágenes</button>
+            <button type="button" data-queue="candidates">Posibles imágenes</button>
+            <button type="button" data-queue="referred">Derivadas al auditor</button>
+            <button type="button" data-queue="all">Ver factura completa · consulta</button>
+          </div>
+          <label class="sheet-search">Buscar en la planilla <input id="board-search" type="search" maxlength="100" autocomplete="off" placeholder="Afiliado, nombre, orden, código o práctica"></label>
+          <div class="board-filter-actions"><button type="submit">Buscar / filtrar</button><button id="board-reset" type="button" class="secondary">Limpiar</button><details id="board-more-filters"><summary>Más filtros</summary><div class="board-advanced-filters">
+          <label>Prácticas <select id="board-family"><option value="images">Imágenes · código o nombre exacto</option><option value="image_candidates">Solo posibles imágenes</option><option value="images_and_candidates">Imágenes + posibles imágenes por revisar</option><option value="unclassified">Prácticas sin clasificar</option><option value="other">Otras áreas del catálogo</option><option value="all">Todas las prácticas</option></select></label>
+          <label>Resultado <select id="board-state"><option value="">Todos los resultados</option><option value="con_indicios">Con aviso para revisar</option><option value="sin_indicios">Sin diferencias en un control</option><option value="no_concluyente">Falta información</option><option value="no_evaluado">Control sin ejecutar</option><option value="requires_update">Revisar datos actualizados</option><option value="no_aplicable">Control que no corresponde</option></select></label>
+          <label>Modo de trabajo <select id="board-view"><option value="all">Revisión general</option><option value="exceptions">Excepciones de la factura</option><option value="referred">Derivaciones en curso</option><option value="pending">Trabajo pendiente</option><option value="information">Información faltante o sin evaluar</option><option value="reviewed">Avisos ya revisados</option><option value="row_reviewed">Prestaciones revisadas</option></select></label>
+          <label>Controles a visualizar <select id="board-rule" multiple size="5" aria-describedby="board-criteria-help"></select></label>
+          <label>Combinar controles <select id="board-rules-match"><option value="any">Cualquiera (ANY)</option><option value="all">Todos en la misma prestación (ALL)</option></select></label>
+          <p id="board-criteria-help">Seleccioná varios con Ctrl (Windows) o Cmd (Mac). Sin selección: todos. El resultado y motivo elegidos se aplican a cada control seleccionado. Para ver alertas elegí «Con aviso para revisar». Estos filtros solo cambian la vista: no ejecutan ni desactivan controles, ni cambian decisiones. Los controles sin ejecutar siguen como «No evaluado».</p>
+          <label>Filas <select id="board-scope"><option value="included">Prestaciones para revisión</option><option value="all">Factura completa · solo consulta</option><option value="excluded">Excluidas · consultar historia</option><option value="indeterminate">Fecha o tipo por aclarar</option></select></label>
+          <label>Motivo <select id="board-reason"><option value="">Todos los motivos</option></select></label>
+          <label>Decisión humana <select id="board-decision"><option value="">Cualquier decisión</option><option value="pendiente">Pendiente</option><option value="confirmada">Confirmada</option><option value="descartada">Descartada</option><option value="no_concluyente">No concluyente</option></select></label>
+          <label>Código completo exacto <input id="board-code" maxlength="80"></label>
+          <label>Texto de descripción <input id="board-text" maxlength="100" autocomplete="off"></label>
+          <label>Desde <input id="board-date-from" type="date"></label>
+          <label>Hasta <input id="board-date-to" type="date"></label>
+          <label>Ordenar por <select id="board-sort"><option value="affiliate_id">Afiliado y fecha</option><option value="priority">Prioridad de revisión</option><option value="source_row">Fila de origen</option><option value="practice_date">Fecha</option><option value="code">Código completo</option><option value="total_ars">Total facturado</option></select></label>
+          <label>Orden <select id="board-direction"><option value="asc">Ascendente</option><option value="desc">Descendente</option></select></label>
+          </div></details></div>
+          <input type="hidden" id="board-exception-reason"><div id="exception-reasons" role="group" aria-label="Filtrar pendientes por motivo"></div><div class="column-filters">
+          <label>Aval CSV <select id="board-csv-review-state"><option value="all">Todos</option><option value="supported">Con aval para una realización</option><option value="review">Para revisar</option><option value="budget">Presupuesto por revisar</option><option value="rejected">Rechazo individual declarado</option><option value="undetermined">Sin cotejo determinado</option></select></label>
+          <label title="Comparación exploratoria, no estado RN14 ni decisión. Las diferencias pueden depender de moneda/unidad aún no acreditadas.">Valores <select id="board-reference-comparison-state"><option value="all">Todas</option><option value="differences">Diferencias numéricas a revisar</option><option value="equal">Coincidencias numéricas</option><option value="undetermined">Sin comparación determinada</option></select></label>
+          <label title="Filtra adjuntos para revisión manual. No aportado no significa que el documento no exista ni que la prestación no se haya realizado; no determina cumplimiento.">Informe PDF <select id="board-report-document-state"><option value="all">Todos los estados documentales</option><option value="no_aportado">Sin PDF aportado</option><option value="aportado_sin_revisar">PDF aportado, pendiente de lectura</option><option value="revisado_manualmente">PDF con lectura manual registrada</option></select></label>
+          <label title="Filtra adjuntos para revisión manual. No aportado no significa que el documento no exista ni que la prestación no se haya realizado; no determina cumplimiento.">Autorización PDF <select id="board-authorization-document-state"><option value="all">Todos los estados documentales</option><option value="no_aportado">Sin PDF aportado</option><option value="aportado_sin_revisar">PDF aportado, pendiente de lectura</option><option value="revisado_manualmente">PDF con lectura manual registrada</option></select></label>
+          </div>
+
+        </form>
+        <div class="sheet-status"><button type="button" id="board-expand" class="secondary" aria-pressed="false">Ampliar planilla</button><p id="board-count" role="status" aria-live="polite"></p><p id="workspace-context-summary" aria-live="polite">Seleccioná un lote para trabajar.</p><label><input id="board-show-amounts" type="checkbox"> Ver honorarios y derechos</label></div>
+        <div id="sheet-selection-bar" hidden><span id="sheet-selection-count"></span><button id="sheet-preview-button" type="button">Revisar decisión</button><button id="sheet-selection-clear" type="button" class="secondary">Quitar selección</button></div>
+        <p id="sheet-action-status" role="status" aria-live="polite"></p>
+        <div class="board-layout">
+          <div class="board-table-wrapper" tabindex="0" aria-label="Planilla de facturación, desplazamiento horizontal y vertical"><table id="practice-table"><colgroup id="board-columns"></colgroup><caption>Datos de la factura · importes ARS de fila · consulta sin modificar el original</caption><thead><tr class="column-groups"><th colspan="2" scope="colgroup">Prestación facturada</th><th colspan="4" scope="colgroup">Autorizaciones y documentos</th><th colspan="5" scope="colgroup" id="amounts-group">Importes</th><th colspan="2" scope="colgroup">Revisión</th></tr><tr class="column-labels"><th class="column-date" scope="col">Fecha / orden</th><th class="column-practice" scope="col">Prestación</th><th class="column-presence" scope="col" title="Práctica localizada por afiliado y código completo en las fuentes de autorizaciones seleccionadas">En fuente</th><th class="column-authorization" scope="col">Aval individual</th><th class="column-document" scope="col">Informe</th><th class="column-document" scope="col">Aut. PDF</th><th class="extra-amount" scope="col">Honorarios</th><th class="extra-amount" scope="col">Derechos</th><th class="column-billed" scope="col">Facturado<br>ARS</th><th class="column-reference" scope="col">Convenio HPC</th><th class="column-budget" scope="col">Presupuesto<br>autorizado</th><th class="column-difference" scope="col">Diferencia<br>a revisar</th><th class="column-debit" scope="col">Débito<br>propuesto</th><th class="column-review" scope="col">Revisión</th><th class="column-actions" scope="col">Acciones</th></tr></thead><tbody id="practice-rows"></tbody></table></div>
+          <aside id="practice-detail-panel" hidden aria-label="Detalle de práctica"><div class="row"><h4 id="practice-detail-heading">Detalle de práctica</h4><button id="practice-detail-close" type="button" class="secondary">Cerrar detalle</button></div><div id="practice-detail-content"></div></aside>
+        </div>
+        <span id="sheet-review-home" hidden></span><aside id="sheet-review-panel" hidden aria-label="Revisión desde la planilla"><div class="row"><h4 id="sheet-review-heading"></h4><button id="sheet-review-close" type="button" class="secondary">Cerrar</button></div><div id="sheet-review-content"></div></aside>
+        <div class="sheet-footer"><div><button id="board-previous" type="button" disabled>Anterior</button><span id="board-page"></span><button id="board-next" type="button" disabled>Siguiente</button></div><span>Importes de factura. Los avisos requieren revisión; no son débitos.</span></div>
+        <details id="legacy-review"><summary>Herramientas avanzadas de revisión</summary>
+      <section id="review-panel" hidden>
+        <h3>Alertas para revisión</h3>
+        <p>Un indicio automático queda pendiente hasta que un revisor registre una decisión. La decisión se vincula al resultado y conserva su historial.</p>
+        <button id="materialize-button" type="button">Preparar alertas del análisis</button>
+        <button id="refresh-alerts-button" type="button">Actualizar lista</button>
+        <label><input id="include-historical-alerts" type="checkbox"> Mostrar también historia de filas fuera de alcance</label>
+        <p id="alert-count"></p>
+        <ul id="alerts"></ul>
+        <div class="row"><button id="alerts-previous" type="button">Anterior</button><button id="alerts-next" type="button">Siguiente</button></div>
+        <h4>Detalle de alerta</h4>
+        <pre id="alert-detail" aria-live="polite"></pre>
+        <h4>Propuesta de la fila y vigencia de sus componentes</h4>
+        <pre id="proposal-detail" aria-live="polite"></pre>
+        <form id="decision-form">
+          <label>Decisión para las alertas seleccionadas
+            <select id="decision-state"><option value="confirmada">Confirmada</option><option value="descartada">Descartada</option><option value="no_concluyente">No concluyente</option></select>
+          </label>
+          <label>Fundamento <textarea id="decision-foundation" required minlength="10"></textarea></label>
+          <label>Evidencia adicional para confirmar <textarea id="decision-evidence" required minlength="10"></textarea></label>
+          <button type="submit">Guardar decisiones seleccionadas</button>
+        </form>
+        <h4>Corrección interna de interpretación</h4>
+        <p>Se conserva el valor original y el historial. Corregir no vuelve a analizar automáticamente.</p>
+        <form id="work-change-form">
+          <label>Fila física <input id="work-row" type="number" min="2" required></label>
+          <label>Campo <select id="work-field"><option>B</option><option>C</option><option>E</option><option>G</option><option>K</option></select></label>
+          <label>Valor interpretado <input id="work-value" maxlength="500" required></label>
+          <label>Motivo <textarea id="work-reason" required minlength="10"></textarea></label>
+          <button type="submit">Guardar corrección</button>
+        </form>
+      </section>
+        </details>
+      </section>
+      <section id="export-panel" hidden>
+        <section id="audit-output" hidden><h3>Salida de Imágenes</h3>
+          <p>El resumen, la confirmación y el Excel de débitos están en la planilla de esta factura.</p>
+          <a id="image-pdf-download" download="Observaciones-HPC.pdf">Descargar PDF de observaciones</a> <button type="button" id="audit-open-board">Ir a la planilla</button></section>
+        <div id="traditional-output"><h3>Salida y cierre</h3><p>Descargá una captura del lote con fuentes, resultados, decisiones e historia. Los resultados afectados y las limitaciones se conservan identificados.</p>
+        <button id="export-provisional-button" type="button">Descargar salida provisional</button>
+        <p>Contiene datos privados. Los importes sin respaldo quedan sin cuantificar; no aplica débitos definitivos.</p>
+        <section id="closure-panel">
+          <h3>Cierre de revisión</h3>
+          <p>El cierre conserva decisiones, fuentes y limitaciones. No certifica toda la factura ni aprueba débitos. Una revisión cerrada no se modifica.</p>
+          <button id="closure-preview" type="button">Revisar condiciones de cierre</button>
+          <div id="closure-content" aria-live="polite"></div>
+          <button id="closure-download" type="button" disabled>Descargar captura de cierre</button>
+        </section>
+        </div><section id="revisions-panel">
+          <h3>Historial y nueva revisión</h3>
+          <p>Una nueva revisión conserva el cierre anterior y comparte el Excel original. No duplica facturación.</p>
+          <button id="revisions-load" type="button">Consultar historial de revisiones</button>
+          <div id="revisions-content" aria-live="polite"></div>
+        </section>
+      </section>
+    </section>
+    <p id="message" role="status" aria-live="polite"></p>
+  </main>
+  <script src="/assets/practice_requests.js" defer></script>
+  <script src="/assets/display_categories.js" defer></script>
+  <script src="/assets/invoice_home.js" defer></script>
+  <script src="/assets/workbench.js" defer></script>
+  <script src="/assets/sheet_actions.js" defer></script>
+  <script src="/assets/authorization_checks.js" defer></script>
+  <script src="/assets/economic_applicability.js" defer></script>
+  <script src="/assets/rn14_proposals.js" defer></script>
+  <script src="/assets/medical_consultations.js" defer></script>
+  <script src="/assets/row_documents.js" defer></script>
+  <script src="/assets/processing.js" defer></script>
+  <script src="/assets/closure.js" defer></script>
+  <script src="/assets/revisions.js" defer></script>
+  <script src="/assets/invoice_handoff.js" defer></script>
+  <script src="/assets/invoice_audit.js" defer></script>
+  <script src="/assets/row_decision.js" defer></script>
+  <script src="/assets/observation_workflow.js" defer></script>
+  <script src="/assets/app.js" defer></script>
+  <script src="/assets/provider_scope.js" defer></script>
+  <script src="/assets/hpc_percentage.js" defer></script>
+  <script src="/assets/agreement_declarations.js" defer></script>
+  <script src="/assets/local_hpc.js" defer></script>
+  <script src="/assets/code_correspondences.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,19 @@
+B18-R23 · Demo local de Imágenes HPC
+
+Ingresá como demo-administrativo. Las claves ficticias están en .tmp/presentacion-R23/credenciales-demo.txt.
+Para iniciar de nuevo la demo, abrí ABRIR-DEMO.cmd. La ventana indica un puerto local disponible.
+
+Para probar los códigos
+1. Elegí el conjunto «DEMO FICTICIO · Códigos Excel y CSV».
+2. Abrí FICTICIO_equivalencias_TAC.xlsx y usá Ver factura completa para ver las dos TAC.
+3. La TAC del 02/08 usa el código 654321 del Excel y la orden FICTICIO-R23-01 contiene 6543210100. La correspondencia específica del catálogo ficticio está registrada. La columna de presencia indica Hallada y la autorización muestra una realización cubierta.
+4. La TAC del 04/08 muestra que el aval ya fue usado. La exportación ficticia completa permite proponer $100.000 para revisión. Guardá una decisión única sobre esta prestación.
+5. La categoría y el reconocimiento de autorización se comprueban por separado del precio. En este conjunto no se cargó una tarifa aplicable para la primera TAC.
+6. Con demo-admin, abrí Convenios y valores > Revisar correspondencias del catálogo. La correspondencia está marcada. Podés retirarla y guardar un fundamento. Al actualizar, la planilla requiere nuevamente el cotejo. El historial conserva la decisión anterior.
+
+Los otros dos conjuntos permiten probar el cierre
+- «Recorrido administrativo y auditor» contiene la TAC de $450.000 con presupuesto $200.000 y propuesta $250.000, seguida de otra TAC sin aval disponible.
+- «Orden mixta de Imágenes» permite vincular el presupuesto de la eco sin repartirlo en la resonancia.
+Al terminar las decisiones de Imágenes, pasá al auditor. demo-auditor ajusta y confirma el cierre y descarga el Excel y el PDF.
+
+Los tres conjuntos son ficticios. La presentación conserva las acciones que realices. Para repetir desde cero, generá otra carpeta nueva mediante python -B -m scripts.create_r23_demo --name NOMBRE-NUEVO.

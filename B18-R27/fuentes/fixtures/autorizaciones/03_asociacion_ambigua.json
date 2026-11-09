@@ -1,0 +1,72 @@
+{
+  "schema_version": "A1-canonical-v1",
+  "data_origin": "synthetic",
+  "source": {
+    "system": "demo-autorizaciones",
+    "stream_id": "demo-ambiguo",
+    "capture_id": "FICT-CAP-AMBIGUO",
+    "captured_at": "2026-08-20T10:00:00-03:00"
+  },
+  "coverage": {
+    "declared": "partial",
+    "description": "Caso ficticio: dos ítems del mismo código; posible vínculo ambiguo con facturación, todavía no evaluado.",
+    "period": "2026-08",
+    "limitations": [
+      "Solo casos inventados para probar la importación."
+    ]
+  },
+  "orders": [
+    {
+      "order_id": "FICT-ORD-001",
+      "affiliate_id": "FICT-AFI-001",
+      "provider": "HPC",
+      "ordered_at": "2026-08-10",
+      "global_status": "authorized",
+      "items": [
+        {
+          "item_id": "FICT-ITEM-01",
+          "position": 1,
+          "full_code": "0000123456",
+          "description": "Práctica ficticia uno",
+          "requested_quantity": "2",
+          "unit": "practica",
+          "service_date": "2026-08-15"
+        },
+        {
+          "item_id": "FICT-ITEM-02",
+          "position": 2,
+          "full_code": "0000123456",
+          "description": "Práctica ficticia dos",
+          "requested_quantity": null,
+          "unit": "practica",
+          "service_date": null
+        }
+      ],
+      "resolutions": [
+        {
+          "resolution_id": "FICT-RES-01",
+          "scope": "item",
+          "item_ids": [
+            "FICT-ITEM-01"
+          ],
+          "status": "authorized",
+          "authorized_quantity": "1",
+          "unit": "practica",
+          "decided_at": "2026-08-16T09:15-03:00"
+        },
+        {
+          "resolution_id": "FICT-RES-02",
+          "scope": "item",
+          "item_ids": [
+            "FICT-ITEM-02"
+          ],
+          "status": "rejected",
+          "authorized_quantity": "0",
+          "unit": "practica",
+          "decided_at": "2026-08-16T09:15-03:00",
+          "reason": "Motivo completamente ficticio."
+        }
+      ]
+    }
+  ]
+}

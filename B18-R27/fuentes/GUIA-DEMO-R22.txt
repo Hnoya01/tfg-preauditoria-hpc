@@ -1,0 +1,15 @@
+B18-R22 · Presentación local de Imágenes HPC
+
+Si la demo está en ejecución, usá el enlace 127.0.0.1 de la entrega.
+Para iniciarla de nuevo en este equipo, abrí ABRIR-DEMO.cmd en la carpeta fuentes. La ventana indica la dirección local disponible. Ctrl+C en esa ventana detiene esa instancia.
+Las claves de las cuentas ficticias están en .tmp\presentacion-HPC\credenciales-demo.txt.
+
+Recorrido de cinco minutos
+1. Ingresá como demo-administrativo. En el primer conjunto, abrí FICTICIO_presupuesto_TAC.xlsx. Hay dos TAC. Buscá por fecha, ya que las prioridades pueden poner primero el importe más alto.
+2. Abrí Revisar en la TAC del 02/08. Facturado $450.000, presupuesto individual $200.000, propuesta $250.000. Elegí Aceptar débito propuesto y Guardar y seguir.
+3. La TAC del 04/08 no tiene otro aval en el CSV ficticio completo. Aceptá la propuesta de $450.000. Con cero pendientes pasá la factura al auditor.
+4. Salí e ingresá como demo-auditor. Abrí la factura recibida. Ajustá la primera decisión a $200.000 indicando un motivo de prueba. El total se actualiza a $650.000 y el neto de Imágenes a $250.000 sobre $900.000 facturados. Confirmá una vez. Descargá el Excel y el PDF.
+5. Para ver el ejemplo de presupuesto compartido, elegí el conjunto «Orden mixta de Imágenes». Como demo-administrativo abrí la ecografía. Vinculá $200.000 al ítem de ecografía de la orden MIXTA-22 e indicá el anexo ficticio y el motivo. Verás $250.000 a revisar. En Ver factura completa, la resonancia conserva su propio convenio HPC de $120.000.
+
+La factura cerrada conserva su historia. Si aparece evidencia nueva, en Salida > Historial y nueva revisión la cuenta administrativa puede iniciar otra revisión del mismo Excel indicando el motivo.
+La demo es persistente. Para reiniciar la presentación desde el comienzo, generá otra carpeta con un nombre nuevo mediante python -B -m scripts.create_r22_demo --name NOMBRE-NUEVO. No borres la que ya usaste. El iniciador acepta esa carpeta ficticia con --name NOMBRE-NUEVO.

@@ -1,0 +1,6 @@
+.venv/
+.tmp/
+.test-results*/
+__pycache__/
+*.sqlite*
+credenciales-demo.txt

@@ -1,0 +1,4 @@
+fastapi==0.115.12
+uvicorn==0.34.3
+argon2-cffi==25.1.0
+openpyxl==3.1.5
