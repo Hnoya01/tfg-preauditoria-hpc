@@ -1393,7 +1393,7 @@ Pendiente: validación visual y Windows, cobertura de clasificación de la factu
 
 ### Revisión correctiva R2 · 2026-11-07
 
-Responde al informe completo de Codex sobre el paquete B1–B3 (SHA256 365c8cd0…): se reprodujeron truncado de instalación, pérdida de edición ajena en rollback, unidad/fuente no visibles y salto de fila por paginación al cambiar versión.
+Responde al informe de revisión del paquete B1–B3 (SHA256 365c8cd0…): se reprodujeron truncado de instalación, pérdida de edición ajena en rollback, unidad/fuente no visibles y salto de fila por paginación al cambiar versión.
 
 - El instalador del nuevo paquete prepara y verifica cada archivo, sincroniza su escritura y sustituye con `os.replace`. Revalida el destino inmediatamente antes. La reversión automática sólo trata archivos sustituidos por esa ejecución y conserva contenido inesperado. Restauración reanudable, también revalidada antes de cada sustitución o eliminación. No se promete transacción global ni inmunidad a escritores simultáneos: servidor y editores detenidos.
 - Importe registrado muestra unidad declarada, moneda cuando consta, fuente, corte, SHA y fechas. Una versión por hora conserva ese rótulo aunque no sea aplicable por práctica. La aplicabilidad y su impedimento siguen separados.
@@ -1401,7 +1401,7 @@ Responde al informe completo de Codex sobre el paquete B1–B3 (SHA256 365c8cd0�
 - La clasificación por nombre ahora normaliza únicamente mayúsculas, acentos y espacios: conserva signos y puntuación. Dos áreas distintas, incluso ambas fuera de Imágenes, son ambiguas y quedan sin clasificar. Esta regla sustituye la normalización de puntuación documentada en B1–B3.
 - La confirmación directa de alcance por API admite sólo HPC. La consulta de historia permite preparar explícitamente un reintento incierto, relee versiones y requiere nueva confirmación; no reenvía por sí sola.
 
-Validación enfocada: 62 Python y 91 JavaScript aprobadas; selección y logs en paquete. Continúa excluido un caso de cierre dependiente de Git ausente del ZIP. Se añaden pruebas stdlib de instalación/restauración con cortes abruptos y cambios de terceros. No se hizo una nueva prueba Windows ni interacción real de navegador. Los resultados Windows 61/88 del informe Codex corresponden al paquete anterior, no certifican R2.
+Validación enfocada: 62 Python y 91 JavaScript aprobadas; selección y logs en paquete. Continúa excluido un caso de cierre dependiente de Git ausente del ZIP. Se añaden pruebas stdlib de instalación/restauración con cortes abruptos y cambios de terceros. No se hizo una nueva prueba Windows ni interacción real de navegador. Los resultados Windows 61/88 del informe corresponden al paquete anterior, no certifican R2.
 
 
 ### Revisión correctiva R3 · 2026-11-07

@@ -8,7 +8,7 @@ El enlace al video: https://youtu.be/IT3xhqJQJXs
 
 ## Ejecutar en Windows
 
-1. Descargue el [ZIP revisado de la entrega](https://github.com/Hnoya01/tfg-preauditoria-hpc/releases/download/B18-R27/B18-R27-mesa-Windows.zip) y extráigalo.
+1. Descargue el [ZIP revisado de la entrega](https://github.com/Hnoya01/tfg-preauditoria-hpc/releases/download/B18-R27-mesa/B18-R27-mesa-Windows.zip) y extráigalo.
 2. Con Python 3.12 instalado, abra PowerShell en la carpeta `B18-R27\fuentes` y ejecute:
 
    ```powershell
