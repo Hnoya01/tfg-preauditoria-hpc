@@ -4,7 +4,7 @@ Prototipo de Trabajo Final de Grado. El administrativo cruza la factura con las 
 
 ## Video de demostración
 
-Pendiente de publicación. El enlace al video se agregará en esta sección.
+El enlace al video: https://youtu.be/IT3xhqJQJXs
 
 ## Ejecutar en Windows
 
